@@ -110,21 +110,18 @@ section[data-testid="stSidebar"] {
 }
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
-/* Inter must not override Material Symbols — raw ligature names (e.g. double_arrow_right) appear if the icon font loses. */
 html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMarkdownContainer"],
 .stMarkdown, label, p, div, textarea, input {
   font-family: """
     + APP_FONT_STACK
     + """ !important;
 }
-span:not(.rangeSlider):not([class*="material-symbol"]):not([class*="material-icons"]) {
-  font-family: """
-    + APP_FONT_STACK
-    + """ !important;
-}
 span[class*="material-symbol"],
 span[class*="material-icons"] {
-  font-family: "Material Symbols Outlined", sans-serif !important;
+  font-family: "Material Symbols Outlined" !important;
+}
+[data-testid="stFileUploader"] button span[class*="material"] {
+  display: none !important;
 }
 [data-testid="stMarkdownContainer"] p, .stMarkdown p {
   line-height: 1.4 !important;
@@ -2446,7 +2443,7 @@ st.markdown(GLOBAL_APP_STYLES, unsafe_allow_html=True)
 st.title("📊 Experiment Decision Support System")
 alpha = SIGNIFICANCE_LEVEL_ALPHA
 
-st.markdown("### Upload CSV file")
+st.markdown("### CSV file")
 
 with st.container():
     st.markdown(
@@ -2454,14 +2451,14 @@ with st.container():
         unsafe_allow_html=True,
     )
     uploaded_file = st.file_uploader(
-        label="",
+        "",
         type=["csv"],
         label_visibility="collapsed",
         key="csv_multi",
     )
 
 if uploaded_file is not None:
-    st.success(f"File uploaded: {uploaded_file.name}")
+    st.success(f"Selected: {uploaded_file.name}")
 
 if uploaded_file is not None:
     df_raw = pd.read_csv(uploaded_file)
