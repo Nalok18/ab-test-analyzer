@@ -1237,6 +1237,8 @@ def build_covariate_balance_chart(
                 axis=alt.Axis(
                     labelAngle=-35,
                     labelLimit=200,
+                    labelFont=APP_FONT_STACK,
+                    titleFont=APP_FONT_STACK,
                     labelFontSize=HC_CHART_X_LABEL_SIZE,
                     labelColor=HC_CHART_LABEL_LIGHT,
                 ),
@@ -1247,6 +1249,8 @@ def build_covariate_balance_chart(
                 axis=alt.Axis(
                     format=".0%",
                     grid=True,
+                    labelFont=APP_FONT_STACK,
+                    titleFont=APP_FONT_STACK,
                     labelFontSize=HC_CHART_Y_LABEL_SIZE,
                     labelColor=HC_CHART_LABEL_LIGHT,
                     titleFontSize=HC_CHART_AXIS_TITLE_SIZE,
@@ -1264,6 +1268,8 @@ def build_covariate_balance_chart(
                 legend=alt.Legend(
                     title=None,
                     orient="top",
+                    labelFont=APP_FONT_STACK,
+                    titleFont=APP_FONT_STACK,
                     labelFontSize=HC_CHART_LEGEND_LABEL_SIZE,
                     labelColor=HC_CHART_LABEL_LIGHT,
                 ),
@@ -1278,7 +1284,23 @@ def build_covariate_balance_chart(
         .properties(height=560)
         .configure_axis(gridColor="rgba(255,255,255,0.08)")
         .configure_view(strokeWidth=0)
-        .configure(font="Inter")
+        .configure(
+            font=APP_FONT_STACK,
+            axis=alt.AxisConfig(
+                labelFont=APP_FONT_STACK,
+                titleFont=APP_FONT_STACK,
+                labelFontSize=HC_CHART_X_LABEL_SIZE,
+                titleFontSize=HC_CHART_AXIS_TITLE_SIZE,
+            ),
+            legend=alt.LegendConfig(
+                labelFont=APP_FONT_STACK,
+                titleFont=APP_FONT_STACK,
+            ),
+            header=alt.HeaderConfig(
+                labelFont=APP_FONT_STACK,
+                titleFont=APP_FONT_STACK,
+            ),
+        )
     )
 
 
