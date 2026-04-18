@@ -2397,16 +2397,35 @@ st.set_page_config(page_title="Experiment Analyzer", layout="wide")
 st.markdown(GLOBAL_APP_STYLES, unsafe_allow_html=True)
 st.title("📊 Experiment Decision Support System")
 
-st.header("1. Experiment data")
-uploaded = st.file_uploader(
-    "📁 Upload experiment CSV",
+st.markdown("### 📂 Upload experiment data")
+
+uploaded_file = st.file_uploader(
+    label="Drop your CSV here or click to upload",
     type=["csv"],
+    help="File should have one row per user",
+    label_visibility="collapsed",
     key="csv_multi",
 )
+
+if uploaded_file is None:
+    st.markdown(
+        """<div style="
+            border: 2px dashed #444;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: #888;
+            margin-bottom: 20px;
+        "><h4>📁 Drag & drop your CSV here</h4><p>or click above to upload</p></div>""",
+        unsafe_allow_html=True,
+    )
+else:
+    st.success(f"File uploaded: {uploaded_file.name}")
+
 alpha = st.sidebar.slider("Significance level α", 0.01, 0.10, 0.05, 0.01)
 
-if uploaded is not None:
-    df_raw = pd.read_csv(uploaded)
+if uploaded_file is not None:
+    df_raw = pd.read_csv(uploaded_file)
     st.caption(f"Rows: **{len(df_raw)}** · Columns: **{', '.join(map(str, df_raw.columns))}**")
     st.dataframe(df_raw.head(20), use_container_width=True)
 
@@ -2416,7 +2435,7 @@ if uploaded is not None:
         df = df_raw.copy()
         df["variant"] = df["variant"].map(_norm_variant)
         metrics = detect_metric_columns(df)
-        upload_name = getattr(uploaded, "name", "") or str(id(uploaded))
+        upload_name = getattr(uploaded_file, "name", "") or str(id(uploaded_file))
         data_fp = (tuple(str(c) for c in df.columns), upload_name, len(df))
         if st.session_state.get(EXP_DATA_FP_KEY) != data_fp:
             st.session_state[EXP_DATA_FP_KEY] = data_fp
