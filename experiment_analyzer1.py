@@ -29,7 +29,14 @@ st.set_page_config(
 # --- Constants ----------------------------------------------------------------
 
 EXCLUDED_FROM_METRICS = frozenset(
-    {"user_id", "variant", "date_in_experiment", "ab_name", "date_in_experivent"}
+    {
+        "user_id",
+        "variant",
+        "date_in_experiment",
+        "ab_name",
+        # Some exports misspell this name; exclude from metrics if present.
+        "date_in_experivent",
+    }
 )
 DEFAULT_CONTROL = "A"
 DEFAULT_TREATMENT = "B"
@@ -1295,6 +1302,9 @@ def render_health_check_view(
 
     # --- Section 1: variant split & SRM (assignment balance)
     st.subheader("Variant distribution")
+    st.caption(
+        "Shown as distance from a 50/50 split (simple heuristic, not a formal χ² test)."
+    )
     if stats["n_c"] + stats["n_t"] == 0:
         st.warning("No rows in filtered cohort.")
         return
@@ -2459,9 +2469,22 @@ with st.container():
 
 if uploaded_file is not None:
     st.success(f"Selected: {uploaded_file.name}")
+    try:
+        df_raw = pd.read_csv(uploaded_file, encoding="utf-8")
+    except UnicodeDecodeError:
+        try:
+            uploaded_file.seek(0)
+        except Exception:
+            pass
+        try:
+            df_raw = pd.read_csv(uploaded_file, encoding="latin-1")
+        except Exception as exc:
+            st.error(f"Could not read CSV: {exc}")
+            st.stop()
+    except Exception as exc:
+        st.error(f"Could not read CSV: {exc}")
+        st.stop()
 
-if uploaded_file is not None:
-    df_raw = pd.read_csv(uploaded_file)
     st.caption(f"Rows: **{len(df_raw)}** · Columns: **{', '.join(map(str, df_raw.columns))}**")
     st.dataframe(df_raw.head(20), use_container_width=True)
 
