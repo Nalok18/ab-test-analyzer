@@ -145,6 +145,24 @@ h1, h2, h3, h4, [data-testid="stHeader"] h1, [data-testid="stDecoration"] h1 {
   font-size: 1.125rem;
   line-height: 1;
 }
+
+/* App chrome: hide Material Symbol *names* leaked as span text (e.g. double_arrow_right); keep SVG if present */
+[data-testid="stDecoration"] button:not([disabled]) span {
+  display: inline-block !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  pointer-events: none !important;
+}
+[data-testid="stDecoration"] button:not([disabled]) svg {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 0.9 !important;
+}
+
 [data-testid="stNavSectionHeader"] > div:last-child {
   position: relative;
   display: inline-flex !important;
@@ -404,6 +422,27 @@ div[data-testid="stVerticalBlock"]:has(.results-view-segmented-wrap) [data-testi
 .goal-metrics-variant-imbalance-alert span {
   color: rgba(253, 230, 138, 0.92);
   font-weight: 500;
+}
+
+/* Single CSV upload zone: style native st.file_uploader only (no duplicate dashed markdown). */
+div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] {
+  width: 100% !important;
+}
+div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] > label {
+  display: none !important;
+}
+div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] section {
+  border: 2px dashed #444 !important;
+  border-radius: 12px !important;
+  padding: 32px 20px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  margin-bottom: 12px !important;
+  text-align: center !important;
+}
+div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"],
+div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploaderDropzone"] {
+  border: none !important;
+  background: transparent !important;
 }
 </style>
 """
@@ -2399,27 +2438,20 @@ st.title("📊 Experiment Decision Support System")
 
 st.markdown("### 📂 Upload experiment data")
 
-uploaded_file = st.file_uploader(
-    label="Drop your CSV here or click to upload",
-    type=["csv"],
-    help="File should have one row per user",
-    label_visibility="collapsed",
-    key="csv_multi",
-)
-
-if uploaded_file is None:
+with st.container():
     st.markdown(
-        """<div style="
-            border: 2px dashed #444;
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            color: #888;
-            margin-bottom: 20px;
-        "><h4>📁 Drag & drop your CSV here</h4><p>or click above to upload</p></div>""",
+        '<span class="csv-upload-marker" aria-hidden="true"></span>',
         unsafe_allow_html=True,
     )
-else:
+    uploaded_file = st.file_uploader(
+        label="\u200b",
+        type=["csv"],
+        help="File should have one row per user",
+        label_visibility="collapsed",
+        key="csv_multi",
+    )
+
+if uploaded_file is not None:
     st.success(f"File uploaded: {uploaded_file.name}")
 
 alpha = st.sidebar.slider("Significance level α", 0.01, 0.10, 0.05, 0.01)
