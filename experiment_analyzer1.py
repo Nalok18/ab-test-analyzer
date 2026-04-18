@@ -19,6 +19,12 @@ from scipy.ndimage import gaussian_filter1d
 from scipy.stats import beta, gaussian_kde, ttest_ind
 from statsmodels.stats.proportion import proportions_ztest
 
+st.set_page_config(
+    page_title="Experiment Analyzer",
+    page_icon="📊",
+    layout="wide",
+)
+
 # --- Constants ----------------------------------------------------------------
 
 EXCLUDED_FROM_METRICS = frozenset(
@@ -89,11 +95,22 @@ GLOBAL_APP_STYLES = (
     """
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
+/* Inter must not override Material Symbols — raw ligature names (e.g. double_arrow_right) appear if the icon font loses. */
 html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMarkdownContainer"],
-.stMarkdown, label, p, span:not(.rangeSlider), div, textarea, input {
+.stMarkdown, label, p, div, textarea, input {
   font-family: """
     + APP_FONT_STACK
     + """ !important;
+}
+span:not(.rangeSlider):not([class*="material-symbol"]):not([class*="material-icons"]) {
+  font-family: """
+    + APP_FONT_STACK
+    + """ !important;
+}
+span[class*="material-symbol"],
+span[class*="material-icons"] {
+  font-family: "Material Symbols Outlined", sans-serif !important;
 }
 [data-testid="stMarkdownContainer"] p, .stMarkdown p {
   line-height: 1.4 !important;
@@ -144,24 +161,6 @@ h1, h2, h3, h4, [data-testid="stHeader"] h1, [data-testid="stDecoration"] h1 {
   visibility: visible !important;
   font-size: 1.125rem;
   line-height: 1;
-}
-
-/* App chrome: hide Material Symbol *names* leaked as span text (e.g. double_arrow_right); keep SVG if present */
-/* FULL fix for broken material icons (Streamlit bug) */
-span[class*="material-symbols"],
-span[class*="material-icons"],
-[data-testid="stDecoration"] button span {
-  font-size: 0 !important;
-  width: 0 !important;
-  height: 0 !important;
-  overflow: hidden !important;
-  display: inline-block !important;
-  position: absolute !important;
-}
-[data-testid="stDecoration"] button:not([disabled]) svg {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 0.9 !important;
 }
 
 [data-testid="stNavSectionHeader"] > div:last-child {
@@ -428,9 +427,6 @@ div[data-testid="stVerticalBlock"]:has(.results-view-segmented-wrap) [data-testi
 /* Single CSV upload zone: style native st.file_uploader only (no duplicate dashed markdown). */
 div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] {
   width: 100% !important;
-}
-div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] > label {
-  display: none !important;
 }
 div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] section {
   border: 2px dashed #444 !important;
@@ -2433,7 +2429,6 @@ def exp_mark_segment_reapply() -> None:
 
 # --- Streamlit app ------------------------------------------------------------
 
-st.set_page_config(page_title="Experiment Analyzer", layout="wide")
 st.markdown(GLOBAL_APP_STYLES, unsafe_allow_html=True)
 st.title("📊 Experiment Decision Support System")
 
@@ -2445,9 +2440,8 @@ with st.container():
         unsafe_allow_html=True,
     )
     uploaded_file = st.file_uploader(
-        label="\u200b",
+        "Upload CSV",
         type=["csv"],
-        help="File should have one row per user",
         label_visibility="collapsed",
         key="csv_multi",
     )
