@@ -23,6 +23,7 @@ st.set_page_config(
     page_title="Experiment Analyzer",
     page_icon="📊",
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 # --- Constants ----------------------------------------------------------------
@@ -94,6 +95,18 @@ APP_FONT_STACK = (
 GLOBAL_APP_STYLES = (
     """
 <style>
+/* No left sidebar: full-width main */
+[data-testid="stSidebar"],
+section[data-testid="stSidebar"] {
+  display: none !important;
+}
+[data-testid="stSidebarNav"] {
+  display: none !important;
+}
+[data-testid="stExpandSidebarButton"],
+[data-testid="stSidebarCollapsedControl"] {
+  display: none !important;
+}
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
 /* Inter must not override Material Symbols — raw ligature names (e.g. double_arrow_right) appear if the icon font loses. */
@@ -2431,6 +2444,7 @@ def exp_mark_segment_reapply() -> None:
 
 st.markdown(GLOBAL_APP_STYLES, unsafe_allow_html=True)
 st.title("📊 Experiment Decision Support System")
+alpha = st.slider("Significance level α", 0.01, 0.10, 0.05, 0.01)
 
 st.markdown("### 📂 Upload experiment data")
 
@@ -2448,8 +2462,6 @@ with st.container():
 
 if uploaded_file is not None:
     st.success(f"File uploaded: {uploaded_file.name}")
-
-alpha = st.sidebar.slider("Significance level α", 0.01, 0.10, 0.05, 0.01)
 
 if uploaded_file is not None:
     df_raw = pd.read_csv(uploaded_file)
