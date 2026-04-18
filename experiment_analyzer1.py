@@ -2397,8 +2397,12 @@ st.set_page_config(page_title="Experiment Analyzer", layout="wide")
 st.markdown(GLOBAL_APP_STYLES, unsafe_allow_html=True)
 st.title("📊 Experiment Decision Support System")
 
-st.header("1. Upload experiment data")
-uploaded = st.file_uploader("CSV (one row per user)", type=["csv"], key="csv_multi")
+st.header("1. Experiment data")
+uploaded = st.file_uploader(
+    "📁 Upload experiment CSV",
+    type=["csv"],
+    key="csv_multi",
+)
 alpha = st.sidebar.slider("Significance level α", 0.01, 0.10, 0.05, 0.01)
 
 if uploaded is not None:
