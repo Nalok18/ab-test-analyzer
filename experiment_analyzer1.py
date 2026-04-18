@@ -37,6 +37,7 @@ BINARY_VALUES = {0, 1, 0.0, 1.0}
 BOOTSTRAP_SAMPLES = 50_000
 BAYES_SAMPLES = 50_000
 UPLIFT_DIST_BOOTSTRAP = 2000  # user-level bootstrap for relative uplift viz
+SIGNIFICANCE_LEVEL_ALPHA = 0.05  # fixed α; no UI control
 
 # Session keys — cached experiment dataframe & segmentation
 EXP_DATA_FP_KEY = "_exp_data_fingerprint"
@@ -2444,7 +2445,7 @@ def exp_mark_segment_reapply() -> None:
 
 st.markdown(GLOBAL_APP_STYLES, unsafe_allow_html=True)
 st.title("📊 Experiment Decision Support System")
-alpha = st.slider("Significance level α", 0.01, 0.10, 0.05, 0.01)
+alpha = SIGNIFICANCE_LEVEL_ALPHA
 
 st.markdown("### 📂 Upload experiment data")
 
