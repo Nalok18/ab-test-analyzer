@@ -445,10 +445,9 @@ div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileU
 div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] section {
   border: 2px dashed #444 !important;
   border-radius: 12px !important;
-  padding: 32px 20px !important;
+  padding: 28px 20px !important;
   background: rgba(255, 255, 255, 0.03) !important;
   margin-bottom: 12px !important;
-  text-align: center !important;
 }
 div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploader"] [data-testid="stFileUploaderDropzone"],
 div[data-testid="stVerticalBlock"]:has(.csv-upload-marker) [data-testid="stFileUploaderDropzone"] {
@@ -2447,7 +2446,7 @@ st.markdown(GLOBAL_APP_STYLES, unsafe_allow_html=True)
 st.title("📊 Experiment Decision Support System")
 alpha = SIGNIFICANCE_LEVEL_ALPHA
 
-st.markdown("### 📂 Upload experiment data")
+st.markdown("### Upload CSV file")
 
 with st.container():
     st.markdown(
@@ -2455,7 +2454,7 @@ with st.container():
         unsafe_allow_html=True,
     )
     uploaded_file = st.file_uploader(
-        "Upload CSV",
+        label="",
         type=["csv"],
         label_visibility="collapsed",
         key="csv_multi",
