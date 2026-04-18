@@ -147,15 +147,16 @@ h1, h2, h3, h4, [data-testid="stHeader"] h1, [data-testid="stDecoration"] h1 {
 }
 
 /* App chrome: hide Material Symbol *names* leaked as span text (e.g. double_arrow_right); keep SVG if present */
-[data-testid="stDecoration"] button:not([disabled]) span {
-  display: inline-block !important;
+/* FULL fix for broken material icons (Streamlit bug) */
+span[class*="material-symbols"],
+span[class*="material-icons"],
+[data-testid="stDecoration"] button span {
   font-size: 0 !important;
-  line-height: 0 !important;
   width: 0 !important;
+  height: 0 !important;
   overflow: hidden !important;
-  opacity: 0 !important;
+  display: inline-block !important;
   position: absolute !important;
-  pointer-events: none !important;
 }
 [data-testid="stDecoration"] button:not([disabled]) svg {
   display: block !important;
