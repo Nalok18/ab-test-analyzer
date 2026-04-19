@@ -1225,6 +1225,10 @@ def build_covariate_balance_chart(
         var_name="Arm",
         value_name="pct",
     )
+    # Legend only: short variant names (avoid "A %", "B %" from table column titles).
+    long_df["Arm"] = long_df["Arm"].replace(
+        {ctrl_label: str(ctrl), trt_label: str(trt)}
+    )
     sort_order = balance_df["value"].tolist()
     return (
         alt.Chart(long_df)
@@ -1262,7 +1266,7 @@ def build_covariate_balance_chart(
             color=alt.Color(
                 "Arm:N",
                 scale=alt.Scale(
-                    domain=[ctrl_label, trt_label],
+                    domain=[str(ctrl), str(trt)],
                     range=[HC_VARIANT_COLOR_CTRL, HC_VARIANT_COLOR_TRT],
                 ),
                 legend=alt.Legend(
